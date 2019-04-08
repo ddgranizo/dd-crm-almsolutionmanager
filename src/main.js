@@ -2,8 +2,12 @@ var CopmonentTypes = {
     entity: 1,
     field: 2,
 
+    relationship: 10,
 
     form: 60,
+    webResource: 61,
+
+    pluginAssembly: 91,
 }
 
 
@@ -50,6 +54,17 @@ app.service('xrmRepositoryService', ['$window', '$http', '$q', '$rootScope',
 
         this.getFormDefinition = function (id) {
             return webApiGet(`systemforms(${id})`)
+                .then(response => { return response.data })
+        }
+
+
+        this.getPluginAssemblyDefinition = function (id) {
+            return webApiGet(`pluginassemblies(${id})`)
+                .then(response => { return response.data })
+        }
+
+        this.getWebResourceDefinition = function (id) {
+            return webApiGet(`webresourceset(${id})`)
                 .then(response => { return response.data })
         }
 
@@ -115,10 +130,11 @@ app.directive('mainView', ["xrmRepositoryService", (xrmRepositoryService) => {
             $scope.$watch('selectedSolution', function (newValue, oldValue) {
                 if (typeof newValue != 'undefined' && newValue != oldValue) {
                     if (newValue != null) {
+                        $scope.solutionComponents.splice(0, $scope.solutionComponents.length);
                         $scope.loadingSolutionComponents = true;
                         xrmRepositoryService.getSolutionComponents(newValue["solutionid"]).then(solutionComponents => {
                             $scope.solutionComponents = solutionComponents;
-                            var promises = [];
+                            let promiseObj = {};
                             for (const solutionComponent of solutionComponents) {
 
                                 const type = solutionComponent["componenttype"];
@@ -127,20 +143,21 @@ app.directive('mainView', ["xrmRepositoryService", (xrmRepositoryService) => {
                                 const rootObjectId = getObjectIdFromSolutionObjectId(rootSolutionObjectId);
                                 var promise = getPromiseForSolutionComponentDefinition(type, objectId, rootObjectId);
                                 if (promise != null) {
-                                    promises.push(promise);
+                                    promiseObj[objectId] = promise;
                                 }
                             }
-                            return xrmRepositoryService.all(promises);
+                            return xrmRepositoryService.all(promiseObj);
                         }).then(definitions => {
-                            console.log(definitions);
-                            for (const definition of definitions) {
-                                setDefinitionToSolutionComponent(definition["MetadataId"], definition);
+
+                            for (const objectId in definitions) {
+                                var value = definitions[objectId];
+                                setDefinitionToSolutionComponent(objectId, value);
                             }
                             $scope.loadingSolutionComponents = false;
                             console.log($scope.solutionComponents);
                         })
                     } else {
-                        $scope.solutionComponents.splice(0, $scope.solutionComponents.length)
+                        $scope.solutionComponents.splice(0, $scope.solutionComponents.length);
                     }
                 }
             });
@@ -166,11 +183,23 @@ app.directive('mainView', ["xrmRepositoryService", (xrmRepositoryService) => {
             getPromiseForSolutionComponentDefinition = function (type, objectId, rootObjectId) {
                 if (type == CopmonentTypes.entity) {
                     return xrmRepositoryService.getEntityDefinition(objectId);
-                } else if (type == CopmonentTypes.field) {
+                }
+                else if (type == CopmonentTypes.field) {
                     return xrmRepositoryService.getFieldDefinition(rootObjectId, objectId);
-                } else if (type == CopmonentTypes.form) {
+                }
+                else if (type == CopmonentTypes.form) {
                     return xrmRepositoryService.getFormDefinition(objectId);
                 }
+                else if (type == CopmonentTypes.pluginAssembly) {
+                    return xrmRepositoryService.getPluginAssemblyDefinition(objectId);
+                }
+                else if (type == CopmonentTypes.webResource) {
+                    return xrmRepositoryService.getWebResourceDefinition(objectId);
+                }
+                else if (type == CopmonentTypes.relationship) {
+                    return xrmRepositoryService.getRelationshipDefinition(objectId);
+                }
+                
                 return null;
             }
 
@@ -219,6 +248,131 @@ app.directive('mainView', ["xrmRepositoryService", (xrmRepositoryService) => {
     };
 
 }]);
+
+
+app.directive('solutionComponentView', () => {
+    return {
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            solutionComponent: '=',
+        },
+        controller: function ($scope, $element) {
+
+
+            $scope.isChild = false;
+            $scope.isRelationship = false;
+            setTypeDescription = function () {
+                var type = $scope.solutionComponent["componenttype"];
+                var isChild = false;
+                var description = `Not implemented (componenttype=${type}`;
+                var logicalName = "";
+                var displayName = "";
+                var parentlogicalName = "";
+                var extraData = null;
+                var isRelationship = false;
+                if (type == CopmonentTypes.entity) {
+                    description = "Entity";
+                    logicalName = "definition.LogicalName";
+                    displayName = "definition.DisplayName.UserLocalizedLabel.Label";
+                } else if (type == CopmonentTypes.field) {
+                    description = "Field";
+                    logicalName = "definition.LogicalName";
+                    displayName = "definition.DisplayName.UserLocalizedLabel.Label";
+                    parentlogicalName = "definition.DisplayName.UserLocalizedLabel.Label";
+                    isChild = true;
+                } else if (type == CopmonentTypes.form) {
+                    description = "Form";
+                    logicalName = "";
+                    displayName = "definition.name";
+                    parentlogicalName = "definition.objecttypecode";
+                    isChild = true;
+                }
+                else if (type == CopmonentTypes.pluginAssembly) {
+                    description = "Plugin";
+                    logicalName = "";
+                    displayName = "definition.name";
+                    parentlogicalName = "definition.objecttypecode";
+                    isChild = false;
+                }
+                else if (type == CopmonentTypes.webResource) {
+                    description = "Web Resource";
+                    logicalName = "";
+                    displayName = "definition.name";
+                    parentlogicalName = "definition.objecttypecode";
+                    isChild = false;
+                }
+                else if (type == CopmonentTypes.relationship) {
+                    description = "Relationship";
+                    logicalName = "definition.IntersectEntityName";
+                    displayName = "definition.DisplayName.UserLocalizedLabel.Label";
+                    parentlogicalName = "definition.DisplayName.UserLocalizedLabel.Label";
+                    isChild = true;
+                    isRelationship = true;
+                    console.log( $scope.solutionComponent.definition);
+                    var relationshipType = $scope.getProperty("definition.RelationshipType");
+                    //console.log(relationshipType);
+                    var shortType = null;
+                    var entity1 = null;
+                    var entity2 = null;
+                    var intersect = null;
+                    
+                    if (relationshipType == "ManyToManyRelationship") {
+                        shortType = "N:N"
+                        entity1 = $scope.getProperty("definition.Entity1LogicalName");
+                        entity2 = $scope.getProperty("definition.Entity2LogicalName");
+                        intersect = $scope.getProperty("definition.IntersectEntityName");
+                    }else if (relationshipType == "OneToManyRelationship") {
+                        shortType = "1:N"
+                        entity1 = $scope.getProperty("definition.ReferencedEntity");
+                        entity2 = $scope.getProperty("definition.ReferencingEntity");
+                        intersect = $scope.getProperty("definition.SchemaName");
+                    }else if (relationshipType == "ManyToOneRelationship") {
+                        shortType = "N:1"
+                        entity1 = $scope.getProperty("definition.ReferencedEntity");
+                        entity2 = $scope.getProperty("definition.ReferencingEntity");
+                        intersect = $scope.getProperty("definition.SchemaName");
+                    }
+
+                    extraData = `${shortType} from ${entity1} to ${entity2} (${intersect})`;
+                }
+
+                $scope.extraData = extraData;
+                $scope.logicalName = logicalName;
+                $scope.displayName = displayName;
+                $scope.parentlogicalName = parentlogicalName;
+                $scope.isChild = isChild;
+                $scope.isRelationship = isRelationship;
+                $scope.typeDescription = description;
+            }
+
+            $scope.getProperty = function (path, obj = $scope.solutionComponent, separator = '.') {
+                if (typeof obj == 'undefined' || obj == null) {
+                    return null;
+                }
+                if (typeof path == 'undefined' || path == null) {
+                    return null;
+                }
+                var properties = Array.isArray(path) ? path : path.split(separator);
+                return properties.reduce((prev, curr) => prev && prev[curr], obj);
+            }
+
+           
+            setTypeDescription();
+            
+
+            
+        },
+        template:
+            ['<div>',
+                '<div ng-show="!isChild">[{{typeDescription}}] {{getProperty(displayName)}} ({{getProperty(logicalName)}}) [{{extraData}}]</div>',
+                '<div ng-show="isChild && !isRelationship"> [{{typeDescription}}] (Entity={{getProperty(parentlogicalName)}}) {{getProperty(displayName)}} ({{getProperty(logicalName)}}) [{{extraData}}]</div>',
+                '<div ng-show="isChild && isRelationship"> [{{typeDescription}}] {{extraData}}</div>',
+                '</div>'].join(""),
+        replace: true
+    };
+
+});
 
 
 app.directive('solutionComponentListView', () => {
@@ -310,7 +464,7 @@ app.directive('solutionComponentListView', () => {
                 '       <div class="row">',
                 '       <div style="width: 30px;"  ng-click="selectSolutionComponent(solutionComponent)" ng-show="isSelected(solutionComponent)"><i class="fa fa-check-square"></i></div>',
                 '       <div style="width: 30px;"  ng-click="selectSolutionComponent(solutionComponent)" ng-show="!isSelected(solutionComponent)"><i class="fa fa-square"></i></div>',
-                '       <solution-component-view solution-component="solutionComponent"  ng-click="selectOneSolutionComponent(solutionComponent)" />',
+                '       <solution-component-view ng-if="solutionComponent!=null && solutionComponent.definition!=null" solution-component="solutionComponent"  ng-click="selectOneSolutionComponent(solutionComponent)" />',
                 '       </div>',
                 '   </li>',
                 '</ul>',
@@ -320,7 +474,6 @@ app.directive('solutionComponentListView', () => {
     };
 
 });
-
 
 
 app.directive('solutionListView', () => {
@@ -443,67 +596,4 @@ app.directive('solutionView', () => {
     };
 
 });
-
-
-app.directive('solutionComponentView', () => {
-    return {
-        restrict: 'E',
-        transclude: true,
-        scope: {
-            solutionComponent: '=',
-        },
-        controller: function ($scope, $element) {
-            
-
-            $scope.isChild = false;
-            setTypeDescription = function () {
-                var type = $scope.solutionComponent["componenttype"];
-                var isChild = false;
-                var description = `Not implemented (componenttype=${type}`;
-                var logicalName = "";
-                var displayName = "";
-                var parentlogicalName = "";
-                if (type == CopmonentTypes.entity) {
-                    description = "Entity";
-                    logicalName = "definition.LogicalName";
-                    displayName = "definition.DisplayName.UserLocalizedLabel.Label";
-                } else if (type == CopmonentTypes.field) {
-                    description = "Field";
-                    logicalName = "definition.LogicalName";
-                    displayName = "definition.DisplayName.UserLocalizedLabel.Label";
-                    parentlogicalName = "definition.DisplayName.UserLocalizedLabel.Label";
-                    isChild = true;
-                } else if (type == CopmonentTypes.form) {
-                    description = "Form";
-                    logicalName = "";
-                    displayName = "definition.name";
-                    parentlogicalName = "definition.objecttypecode";
-                    isChild = true;
-                    console.log($scope.solutionComponent);
-                }
-
-                $scope.logicalName = logicalName;
-                $scope.displayName = displayName;
-                $scope.parentlogicalName = parentlogicalName;
-                $scope.isChild = isChild;
-                $scope.typeDescription = description;
-            }
-
-            setTypeDescription();
-
-            $scope.getProperty = function (path, obj = $scope.solutionComponent, separator = '.') {
-                var properties = Array.isArray(path) ? path : path.split(separator);
-                return properties.reduce((prev, curr) => prev && prev[curr], obj);
-            }
-        },
-        template:
-            ['<div>',
-                '<div ng-show="!isChild">[{{typeDescription}}] {{getProperty(displayName)}} ({{getProperty(logicalName)}})</div>',
-                '<div ng-show="isChild">(Entity={{solutionComponent.definition.EntityLogicalName}}) [{{typeDescription}}] {{getProperty(displayName)}} ({{getProperty(logicalName)}})</div>',
-                '</div>'].join(""),
-        replace: true
-    };
-
-});
-
 
