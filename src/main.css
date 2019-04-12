@@ -1,3 +1,161 @@
-.test{
+/* //URL colores: https://www.color-hex.com/color/94b4cc */
 
+.crm-row {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.crm-resource {
+    margin-left: 2px;
+    margin-right: 2px;
+    padding-left: 2px;
+    padding-right: 2px;
+    border: solid #cccccc 1px;
+    height: fit-content;
+}
+
+.crm-entity {
+    background-color: #BAE1FF !important;
+}
+
+.crm-field {
+    background-color: #ceeaff !important;
+}
+
+.crm-relationship {
+    background-color: #e3f3ff !important;
+}
+
+.crm-form {
+    background-color: #94b4cc !important;
+}
+
+.crm-view {
+    background-color: #9ebbd1 !important;
+}
+
+.crm-ribbon {
+    background-color: #52abf0 !important;
+}
+
+.crm-role {
+    background-color: #ffffba !important;
+}
+
+.crm-connectionrole {
+    background-color: #e5e5a7 !important;
+}
+
+.crm-workflow {
+    background-color: #ffb3ba !important;
+}
+
+.crm-assembly {
+    background-color: #E5A1A7 !important;
+}
+
+.crm-assemblystep {
+    background-color: rgb(199, 141, 146) !important;
+}
+
+.crm-webresource {
+    background-color: #baffc9 !important;
+}
+
+.crm-app {
+    background-color: #CC94B4 !important;
+}
+
+.crm-optionset {
+    background-color: #FFDDBA !important;
+}
+
+.crm-sitemap {
+    background-color: #ffb76e !important;
+}
+
+.crm-convertrule {
+    background-color: #E1FFBA !important;
+}
+
+.crm-routingrule {
+    background-color: #cae5a7 !important;
+}
+
+.crm-chart {
+    background-color: #f767bb !important;
+}
+
+.crm-entitykey {
+    background-color: #f748ae !important;
+}
+
+.crm-hierarchyrule {
+    background-color: #f82ba3 !important;
+}
+
+.crm-emailtemplate {
+    background-color: #33a3ee !important;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font: 16px Arial;
+}
+
+.autocomplete {
+    /*the container must be positioned relative:*/
+    position: relative;
+    display: inline-block;
+}
+
+input {
+    border: 1px solid transparent;
+    background-color: #f1f1f1;
+    padding: 10px;
+    font-size: 16px;
+}
+
+input[type=text] {
+    background-color: #f1f1f1;
+    width: 100%;
+}
+
+input[type=submit] {
+    background-color: DodgerBlue;
+    color: #fff;
+}
+
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.autocomplete-items div:hover {
+    /*when hovering an item:*/
+    background-color: #e9e9e9;
+}
+
+.autocomplete-active {
+    /*when navigating through the items using the arrow keys:*/
+    background-color: DodgerBlue !important;
+    color: #ffffff;
 }
