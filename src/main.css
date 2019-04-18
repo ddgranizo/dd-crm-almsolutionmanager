@@ -7,10 +7,9 @@
 }
 
 .crm-resource {
-    margin-left: 2px;
-    margin-right: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    color: black !important;
     border: solid #cccccc 1px;
     height: fit-content;
 }
@@ -158,4 +157,11 @@ input[type=submit] {
     /*when navigating through the items using the arrow keys:*/
     background-color: DodgerBlue !important;
     color: #ffffff;
+}
+
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
 }
