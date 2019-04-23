@@ -162,11 +162,11 @@ var SetDefinitions = [
         type: CopmonentTypes.emailTemplate,
         isChild: false,
         link: "/tools/emailtemplateeditor/emailtemplateeditor.aspx?_CreateFromId={{0}}&_CreateFromType=7100&appSolutionId={{0}}&id={{1}}",
-        set: "templates({0})",
+        set: "templates({0})?$select=title",
         display: {
             description: "Email template",
             logicalName: "",
-            displayName: "definition.name",
+            displayName: "definition.title",
             parentlogicalName: "",
             class: "crm-emailtemplate",
         }
@@ -176,7 +176,7 @@ var SetDefinitions = [
         type: CopmonentTypes.ribbon,
         isChild: false,
         link: null,
-        set: "ribboncustomizations?$filter=ribboncustomizationid eq {0}&$select=name",
+        set: "ribboncustomizations?$filter=ribboncustomizationid eq {0}",
         display: {
             description: "Ribbon",
             logicalName: "",
@@ -1450,7 +1450,7 @@ app.directive('solutionComponentListView', () => {
                 
                 '<div class="row">',
                 '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=1" ng-click="backPage()" style="cursor: pointer"><i class="fa fa-arrow-left"></i></div>',
-                '   <div class="col-md-10" >Page {{currentPage}}/{{pagesNumber}} (Total count={{filteredSolutionComponents.length}})</div>',
+                '   <div class="col-md-10" >Page {{currentPage}}/{{pagesNumber}} (Total count={{solutionComponents.length}})</div>',
                 '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=pagesNumber" ng-click="nextPage()" style="cursor: pointer"><i class="fa fa-arrow-right"></i></div>',
                 '</div>',
 
@@ -1469,7 +1469,7 @@ app.directive('solutionComponentListView', () => {
                 
                 '<div class="row">',
                 '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=1" ng-click="backPage()" style="cursor: pointer"><i class="fa fa-arrow-left"></i></div>',
-                '   <div class="col-md-10" >Page {{currentPage}}/{{pagesNumber}} (Total count={{filteredSolutionComponents.length}})</div>',
+                '   <div class="col-md-10" >Page {{currentPage}}/{{pagesNumber}} (Total count={{solutionComponents.length}})</div>',
                 '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=pagesNumber" ng-click="nextPage()" style="cursor: pointer"><i class="fa fa-arrow-right"></i></div>',
                 '</div>',
                 '</div>'].join(""),
