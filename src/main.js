@@ -162,7 +162,7 @@ var SetDefinitions = [
         type: CopmonentTypes.emailTemplate,
         isChild: false,
         link: "/tools/emailtemplateeditor/emailtemplateeditor.aspx?_CreateFromId={{0}}&_CreateFromType=7100&appSolutionId={{0}}&id={{1}}",
-        set: "templates({0})?$select=name",
+        set: "templates({0})",
         display: {
             description: "Email template",
             logicalName: "",
@@ -1274,7 +1274,7 @@ app.directive('solutionComponentListView', () => {
         },
         controller: function ($scope, $element) {
 
-            $scope.itemsPerPage = 100;
+            $scope.itemsPerPage = 25;
             $scope.currentPage = 1;
             $scope.pagesNumber = 1;
 
@@ -1289,22 +1289,34 @@ app.directive('solutionComponentListView', () => {
                 $scope.filteredSolutionComponents = [];
                 var filtered = $scope.getFilteredSolutionComponents($scope.solutionComponents);
 
-                $scope.pagesNumber = Math.floor(filtered.length / $scope.itemsPerPage) + 1;
+                var pagesNumber = Math.floor(filtered.length / $scope.itemsPerPage);
+                if (pagesNumber < filtered.length / $scope.itemsPerPage) {
+                    pagesNumber++;
+                }
+                $scope.pagesNumber = pagesNumber;
+
                 var paged = filtered;
                 if ($scope.pagesNumber > 1) {
                     const startIndex = ($scope.currentPage - 1) * $scope.itemsPerPage;
-                    const endIndex = Math.min($scope.currentPage * $scope.itemsPerPage, filtered.length - 1);
+                    const endIndex = Math.min($scope.currentPage * $scope.itemsPerPage, filtered.length );
                     paged = filtered.slice(startIndex, endIndex);
                 }
                 for (const component of paged) {
                     $scope.filteredSolutionComponents.push(component);
                 }
-
             }
 
             $scope.$watch('selectedComponentsType', function (newValue, oldValue) {
+                $scope.currentPage = 1;
                 $scope.setSolutionComponentsForPage();
             }, true);
+
+            
+            $scope.$watch('currentPage', function (newValue, oldValue) {
+                if (newValue != null && newValue != oldValue) {
+                    $scope.setSolutionComponentsForPage();
+                }
+            })
 
             $scope.selectIncludeAllComponents = function () {
                 $scope.selectedComponentsType = $scope.includingComponentsType;
@@ -1333,39 +1345,7 @@ app.directive('solutionComponentListView', () => {
             }
 
 
-            /* $scope.$watch('filter', function (newValue, oldValue) {
-                $scope.loading = true;
-                if (typeof newValue != 'undefined' && newValue != oldValue) {
-                    var filtered = filterFunction($scope.solutionComponents);
-                    setFilteredSolutionComponents(filtered);
-                }
-                $scope.loading = false;
 
-            }) */
-
-            $scope.$watch('currentPage', function (newValue, oldValue) {
-                if (newValue != null && newValue != oldValue) {
-                    $scope.setSolutionComponentsForPage();
-                }
-            })
-
-            function filterFunction(allSolutionComponents) {
-                var filter = $scope.filter;
-                if (filter == null || filter == "") {
-                    return allSolutionComponents;
-                } else {
-                    var searchFields = ["friendlyname", "uniquename"];
-                    var filteredSolutionComponents = $scope.solutionComponents.filter(solutionComponent => {
-                        for (const field of searchFields) {
-                            if (solutionComponent[field].toLowerCase().indexOf(filter) > -1) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    });
-                    return filteredSolutionComponents;
-                }
-            }
 
             $scope.initialize = function () {
                 $scope.filter = null;
@@ -1387,7 +1367,6 @@ app.directive('solutionComponentListView', () => {
                     $scope.selectedComponentsType.push(componentType);
                 }
                 $scope.setSolutionComponentsForPage();
-                //setFilteredSolutionComponents($scope.solutionComponents);
             }
 
             $scope.getFilteredSolutionComponents = function (solutionComponents) {
@@ -1471,7 +1450,7 @@ app.directive('solutionComponentListView', () => {
                 
                 '<div class="row">',
                 '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=1" ng-click="backPage()" style="cursor: pointer"><i class="fa fa-arrow-left"></i></div>',
-                '   <div class="col-md-10" >Page {{currentPage}}/{{pagesNumber}}</div>',
+                '   <div class="col-md-10" >Page {{currentPage}}/{{pagesNumber}} (Total count={{filteredSolutionComponents.length}})</div>',
                 '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=pagesNumber" ng-click="nextPage()" style="cursor: pointer"><i class="fa fa-arrow-right"></i></div>',
                 '</div>',
 
@@ -1480,7 +1459,7 @@ app.directive('solutionComponentListView', () => {
                 '       <div class="row">',
                 '           <div class="col-md-1"  ng-click="selectSolutionComponent(solutionComponent)" ng-show="isSelected(solutionComponent)"><i class="fa fa-check-square"></i></div>',
                 '           <div class="col-md-1"  ng-click="selectSolutionComponent(solutionComponent)" ng-show="!isSelected(solutionComponent)"><i class="fa fa-square"></i></div>',
-                '           <div class="col-md-1" style="width: auto; "><span>{{$index + 1}}.</span></div>',
+                '           <div class="col-md-1" style="width: auto; "><span>{{(currentPage-1)*itemsPerPage + $index + 1}}.</span></div>',
                 '           <solution-component-view class="col-md-8" ng-if="solutionComponent!=null && solutionComponent.definition!=null" solution-component="solutionComponent"  ng-click="selectOneSolutionComponent(solutionComponent)" />',
                 //'           <div style="margin-left: 10px" ng-click="openResource(solutionComponent)"><i class="fa fa-external-link-alt" aria-hidden="true"></i></div>',
                 '       </div>',
@@ -1490,7 +1469,7 @@ app.directive('solutionComponentListView', () => {
                 
                 '<div class="row">',
                 '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=1" ng-click="backPage()" style="cursor: pointer"><i class="fa fa-arrow-left"></i></div>',
-                '   <div class="col-md-10" >Page {{currentPage}}/{{pagesNumber}}</div>',
+                '   <div class="col-md-10" >Page {{currentPage}}/{{pagesNumber}} (Total count={{filteredSolutionComponents.length}})</div>',
                 '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=pagesNumber" ng-click="nextPage()" style="cursor: pointer"><i class="fa fa-arrow-right"></i></div>',
                 '</div>',
                 '</div>'].join(""),
