@@ -1447,10 +1447,12 @@ app.directive('solutionComponentListView', () => {
 
             $scope.backPage = function () {
                 $scope.currentPage--;
+                window.scrollTo(0, 0);
             }
 
             $scope.nextPage = function () {
                 $scope.currentPage++;
+                window.scrollTo(0, 0);
             }
 
             $scope.initialize();
