@@ -50,7 +50,7 @@ var SetDefinitions = [
         type: CopmonentTypes.entity,
         isChild: false,
         link: "/tools/solution/edit.aspx?id={{0}}",
-        set: "EntityDefinitions({0})",
+        set: "EntityDefinitions({0})?$select=LogicalName,DisplayName",
         display: {
             description: "Entity",
             logicalName: "definition.LogicalName",
@@ -63,7 +63,8 @@ var SetDefinitions = [
         type: CopmonentTypes.field,
         isChild: true,
         link: "/tools/systemcustomization/attributes/manageAttribute.aspx?appSolutionId={{0}}&attributeId={{1}}}&entityId={{2}}}",
-        set: "EntityDefinitions({0})/Attributes({1})",
+        set: "EntityDefinitions({0})/Attributes({1})?$select=LogicalName,DisplayName",
+
         display: {
             description: "Field",
             logicalName: "definition.LogicalName",
@@ -77,7 +78,7 @@ var SetDefinitions = [
         type: CopmonentTypes.optionset,
         isChild: false,
         link: "/tools/systemcustomization/optionset/optionset.aspx?_CreateFromId={{0}}&_CreateFromType=7100&appSolutionId={{0}}&id={{1}}",
-        set: "GlobalOptionSetDefinitions({0})",
+        set: "GlobalOptionSetDefinitions({0})?$select=Name,DisplayName",
         display: {
             description: "OptionSet",
             logicalName: "definition.Name",
@@ -93,6 +94,7 @@ var SetDefinitions = [
         isChild: false,
         link: "/tools/systemcustomization/relationships/manageRelationship.aspx?appSolutionId={{0}}&entityId={{2}}&entityRelationshipId={{1}}&entityRole=referenced",
         set: "RelationshipDefinitions({0})",
+
         display: {
             class: "crm-relationship",
         }
@@ -102,7 +104,7 @@ var SetDefinitions = [
         type: CopmonentTypes.entityKey,
         isChild: true,
         link: "/tools/systemcustomization/AlternateKeys/manageAlternateKeys.aspx?_bView=true&appSolutionId={{0}}&entityId={{2}}&entityKeyId={{1}}",
-        set: "EntityDefinitions({0})/Keys({1})",
+        set: "EntityDefinitions({0})/Keys({1})?$select=LogicalName,DisplayName",
         display: {
             description: "Entity key",
             logicalName: "definition.LogicalName",
@@ -116,7 +118,7 @@ var SetDefinitions = [
         type: CopmonentTypes.role,
         isChild: false,
         link: "/biz/roles/edit.aspx?_CreateFromId={{0}}&_CreateFromType=7100&appSolutionId={{0}}&id={{1}}",
-        set: "roles({0})",
+        set: "roles({0})?$select=name",
         display: {
             description: "Rol",
             logicalName: "",
@@ -130,7 +132,8 @@ var SetDefinitions = [
         type: CopmonentTypes.rolePrivilege,
         isChild: false,
         link: "/biz/roles/edit.aspx?_CreateFromId={{0}}&_CreateFromType=7100&appSolutionId={{0}}&id={{1}}",
-        set: "roles({0})",
+        set: "roles({0})?$select=name",
+
         display: {
             description: "Rol privilege",
             logicalName: "",
@@ -144,7 +147,7 @@ var SetDefinitions = [
         type: CopmonentTypes.workflow,
         isChild: false,
         link: "/sfa/workflow/edit.aspx?_CreateFromId={{0}}&_CreateFromType=7100&appSolutionId={{0}}&id={{1}}",
-        set: "workflows({0})",
+        set: "workflows({0})?$select=name",
         display: {
             description: "Workflow",
             logicalName: "",
@@ -159,7 +162,7 @@ var SetDefinitions = [
         type: CopmonentTypes.emailTemplate,
         isChild: false,
         link: "/tools/emailtemplateeditor/emailtemplateeditor.aspx?_CreateFromId={{0}}&_CreateFromType=7100&appSolutionId={{0}}&id={{1}}",
-        set: "templates({0})",
+        set: "templates({0})?$select=name",
         display: {
             description: "Email template",
             logicalName: "",
@@ -173,7 +176,7 @@ var SetDefinitions = [
         type: CopmonentTypes.ribbon,
         isChild: false,
         link: null,
-        set: "ribboncustomizations?$filter=ribboncustomizationid eq {0}",
+        set: "ribboncustomizations?$filter=ribboncustomizationid eq {0}&$select=name",
         display: {
             description: "Ribbon",
             logicalName: "",
@@ -187,7 +190,8 @@ var SetDefinitions = [
         type: CopmonentTypes.form,
         isChild: false,
         link: "/main.aspx?appSolutionId=%7b{0}%7d&etc=2&extraqs=formtype%3dmain%26formId%3d{1}%26action%3d-1&pagetype=formeditor",
-        set: "systemforms({0})",
+        set: "systemforms({0})?$select=name",
+
         display: {
             description: "Form",
             logicalName: "",
@@ -201,7 +205,8 @@ var SetDefinitions = [
         type: CopmonentTypes.chart,
         isChild: false,
         link: "/main.aspx?appSolutionId={{0}}&extraqs=etc=10382&id={{1}}&pagetype=vizdesigner#622052463",
-        set: "savedqueryvisualizations({0})",
+        set: "savedqueryvisualizations({0})?$select=name",
+
         display: {
             description: "Chart",
             logicalName: "",
@@ -215,7 +220,7 @@ var SetDefinitions = [
         type: CopmonentTypes.view,
         isChild: false,
         link: "/tools/vieweditor/viewManager.aspx?appSolutionId={{0}}&entityId={{2}}&id={{1}}",
-        set: "savedqueries({0})",
+        set: "savedqueries({0})?$select=name",
         display: {
             description: "View",
             logicalName: "",
@@ -231,7 +236,7 @@ var SetDefinitions = [
         type: CopmonentTypes.webResource,
         isChild: false,
         link: "/main.aspx?_CreateFromId={{0}}&_CreateFromType=7100&appSolutionId={{0}}&etc=9333&id={{1}}&pagetype=webresourceedit",
-        set: "webresourceset({0})",
+        set: "webresourceset({0})?$select=name",
         display: {
             description: "Web Resource",
             logicalName: "",
@@ -260,7 +265,7 @@ var SetDefinitions = [
         type: CopmonentTypes.connectionRole,
         isChild: false,
         link: "/connections/connectionroles/edit.aspx?_CreateFromId={{0}}&_CreateFromType=7100&appSolutionId={{0}}&id={{1}}",
-        set: "connectionroles({0})",
+        set: "connectionroles({0})?$select=name",
         display: {
             description: "Connection role",
             logicalName: "",
@@ -275,7 +280,7 @@ var SetDefinitions = [
         type: CopmonentTypes.hierarchyRule,
         isChild: false,
         link: "/tools/systemcustomization/HierarchyRules/manageHierarchyRule.aspx?_bEdit=true&appSolutionId={{0}}&entityId={{2}}&hierarchySettingId={1}",
-        set: "hierarchyrules({0})",
+        set: "hierarchyrules({0})?$select=name",
         display: {
             description: "Hierarchy rule",
             logicalName: "",
@@ -289,7 +294,7 @@ var SetDefinitions = [
         type: CopmonentTypes.app,
         isChild: false,
         link: "/designer/app/{0}/{1}#/AppDesignerCanvas/{1}",
-        set: "appmodules({0})",
+        set: "appmodules({0})?$select=name",
         display: {
             description: "App",
             logicalName: "",
@@ -303,7 +308,7 @@ var SetDefinitions = [
         type: CopmonentTypes.pluginAssembly,
         isChild: false,
         link: null,
-        set: "pluginassemblies({0})",
+        set: "pluginassemblies({0})?$select=name",
         display: {
             description: "Plugin",
             logicalName: "",
@@ -317,7 +322,7 @@ var SetDefinitions = [
         type: CopmonentTypes.pluginStep,
         isChild: false,
         link: null,
-        set: "sdkmessageprocessingsteps({0})",
+        set: "sdkmessageprocessingsteps({0})?$select=name",
         display: {
             description: "Plugin step",
             logicalName: "",
@@ -331,7 +336,7 @@ var SetDefinitions = [
         type: CopmonentTypes.routingRule,
         isChild: false,
         link: "/main.aspx?appSolutionId={{0}}&etc=8181&extraqs=?_CreateFromId=%7b{0}%7d&_CreateFromType=7100&etc=8181&id=%7b{1}%7d&histKey=850460459&newWindow=true&pagetype=entityrecord",
-        set: "routingrules({0})",
+        set: "routingrules({0})?$select=name",
         display: {
             description: "Routing rule",
             logicalName: "",
@@ -345,7 +350,7 @@ var SetDefinitions = [
         type: CopmonentTypes.convertRule,
         isChild: false,
         link: "/main.aspx?appSolutionId={{0}}&etc=9300&extraqs=?_CreateFromId=%7b{0}%7d&_CreateFromType=7100&etc=9300&id=%7b{1}%7d&histKey=925091788&newWindow=true&pagetype=entityrecord",
-        set: "convertrules({0})",
+        set: "convertrules({0})?$select=name",
         display: {
             description: "Convert rule",
             logicalName: "",
@@ -396,18 +401,6 @@ app.service('xrmRepositoryService', ['$window', '$http', '$q', '$rootScope',
                 .then(response => { return response; })
         }
 
-        this.addSolutionComponent = function (solutionComponentId, componentId, componentType, solutionUniqueName, addRequiredComponents, doNotIncludeSubcomponents) {
-            return webApiPost
-                (`AddSolutionComponent`,
-                    {
-                        ComponentId: componentId,
-                        ComponentType: componentType,
-                        SolutionUniqueName: solutionUniqueName,
-                        AddRequiredComponents: addRequiredComponents,
-                        DoNotIncludeSubcomponents: doNotIncludeSubcomponents,
-                    })
-                .then(response => { return response; })
-        }
 
 
         this.getGenericResourceDefinition = function (definition, id, rootId) {
@@ -473,7 +466,7 @@ app.service('xrmRepositoryService', ['$window', '$http', '$q', '$rootScope',
 
         webApiPost = function (options, data) {
             const url = getApiUrl() + options;
-            
+
             return $http.post(url, data, { "Accept": "application/json", "Content-Type": "application/json; charset=utf-8", "OData-MaxVersion": "4.0", "OData-Version": "4.0" })
                 .then(response => {
                     return response;
@@ -489,7 +482,7 @@ app.service('xrmRepositoryService', ['$window', '$http', '$q', '$rootScope',
 
         webApiGet = function (options) {
             const url = getApiUrl() + options;
-            //console.log(url);
+            console.log(url);
             return $http({
                 method: 'GET',
                 url: url
@@ -616,11 +609,14 @@ app.directive('mainView', ["xrmRepositoryService", (xrmRepositoryService) => {
             setDefinitionToSolutionComponent = function (objectId, definition) {
                 for (const solutionComponent of $scope.solutionComponents) {
                     if (solutionComponent["objectid"] == objectId) {
+
                         solutionComponent["definition"] = definition;
                         break;
                     }
                 }
             }
+
+
 
             getPromiseForSolutionComponentDefinition = function (type, objectId, rootObjectId) {
 
@@ -767,9 +763,9 @@ app.directive('mergeSolutionsView', ['xrmRepositoryService', (xrmRepositoryServi
         },
         controller: function ($scope, $element) {
 
-            
 
-            
+
+
 
             $scope.initialize = function () {
                 $scope.bufferedSolutions = [];
@@ -844,14 +840,14 @@ app.directive('mergeSolutionsView', ['xrmRepositoryService', (xrmRepositoryServi
                 }
             };
 
-            
+
 
             $scope.doMerge = function () {
                 $scope.mergeStep = steps.gatheringComponents;
             }
 
             $scope.$watch('mergeStep', function (newValue, oldValue) {
-                
+
                 if (oldValue == steps.stop
                     && newValue == steps.gatheringComponents) {
                     $scope.gatherSolutionComponents();
@@ -911,7 +907,7 @@ app.directive('mergeSolutionsView', ['xrmRepositoryService', (xrmRepositoryServi
                             }
                         }
 
-                        let sortedComponents = allItems.sort((a,b)=>{
+                        let sortedComponents = allItems.sort((a, b) => {
                             if (a["componenttype"] == CopmonentTypes.entity) {
                                 return -1;
                             }
@@ -934,7 +930,7 @@ app.directive('mergeSolutionsView', ['xrmRepositoryService', (xrmRepositoryServi
                     if (newSolutionComponent["objectid"] == solutionComponent["objectid"]) {
                         found = true;
                         if (newSolutionComponent["componenttype"] == CopmonentTypes.entity
-                         && newSolutionComponent["rootcomponentbehavior"] == 0) {
+                            && newSolutionComponent["rootcomponentbehavior"] == 0) {
                             solutionComponent["rootcomponentbehavior"] = 0;
                         }
                         break;
@@ -1210,8 +1206,8 @@ app.directive('solutionComponentView', () => {
             }
 
 
-            $scope.showAllSubcomponentsIncluded = function(){
-                return $scope.solutionComponent["componenttype"] == CopmonentTypes.entity && $scope.solutionComponent["rootcomponentbehavior"]  == 0;
+            $scope.showAllSubcomponentsIncluded = function () {
+                return $scope.solutionComponent["componenttype"] == CopmonentTypes.entity && $scope.solutionComponent["rootcomponentbehavior"] == 0;
             }
 
             getTypeDefinition = function (type) {
@@ -1278,21 +1274,39 @@ app.directive('solutionComponentListView', () => {
         },
         controller: function ($scope, $element) {
 
+            $scope.itemsPerPage = 100;
+            $scope.currentPage = 1;
+            $scope.pagesNumber = 1;
 
             $scope.filter = null;
             $scope.includingComponentsType = [];
             $scope.displayComponentsType = {};
             $scope.selectedComponentsType = [];
-           
 
 
 
+            $scope.setSolutionComponentsForPage = function () {
+                $scope.filteredSolutionComponents = [];
+                var filtered = $scope.getFilteredSolutionComponents($scope.solutionComponents);
 
-            $scope.$watch('selectedComponentsType', function(newValue, oldValue){
-                setFilteredSolutionComponents($scope.solutionComponents);
-            },true);
+                $scope.pagesNumber = Math.floor(filtered.length / $scope.itemsPerPage) + 1;
+                var paged = filtered;
+                if ($scope.pagesNumber > 1) {
+                    const startIndex = ($scope.currentPage - 1) * $scope.itemsPerPage;
+                    const endIndex = Math.min($scope.currentPage * $scope.itemsPerPage, filtered.length - 1);
+                    paged = filtered.slice(startIndex, endIndex);
+                }
+                for (const component of paged) {
+                    $scope.filteredSolutionComponents.push(component);
+                }
 
-            $scope.selectIncludeAllComponents = function(){
+            }
+
+            $scope.$watch('selectedComponentsType', function (newValue, oldValue) {
+                $scope.setSolutionComponentsForPage();
+            }, true);
+
+            $scope.selectIncludeAllComponents = function () {
                 $scope.selectedComponentsType = $scope.includingComponentsType;
             }
             $scope.selectOneSolutionComponent = function (solutionComponent) {
@@ -1317,9 +1331,9 @@ app.directive('solutionComponentListView', () => {
             isSolutionComponentInSelectedArray = function (solutionComponent) {
                 return $scope.selectedSolutionComponents.filter(k => { return solutionComponent["solutioncomponentid"] == k["solutioncomponentid"] }).length > 0;
             }
-            
 
-            $scope.$watch('filter', function (newValue, oldValue) {
+
+            /* $scope.$watch('filter', function (newValue, oldValue) {
                 $scope.loading = true;
                 if (typeof newValue != 'undefined' && newValue != oldValue) {
                     var filtered = filterFunction($scope.solutionComponents);
@@ -1327,6 +1341,12 @@ app.directive('solutionComponentListView', () => {
                 }
                 $scope.loading = false;
 
+            }) */
+
+            $scope.$watch('currentPage', function (newValue, oldValue) {
+                if (newValue != null && newValue != oldValue) {
+                    $scope.setSolutionComponentsForPage();
+                }
             })
 
             function filterFunction(allSolutionComponents) {
@@ -1366,18 +1386,19 @@ app.directive('solutionComponentListView', () => {
                 for (const componentType of $scope.includingComponentsType) {
                     $scope.selectedComponentsType.push(componentType);
                 }
-                
-                setFilteredSolutionComponents($scope.solutionComponents);
+                $scope.setSolutionComponentsForPage();
+                //setFilteredSolutionComponents($scope.solutionComponents);
             }
 
-            setFilteredSolutionComponents = function (solutionComponents) {
-                $scope.filteredSolutionComponents = [];
+            $scope.getFilteredSolutionComponents = function (solutionComponents) {
+                var filteredSolutionComponents = [];
                 for (const solutionComponent of solutionComponents) {
                     const type = solutionComponent["componenttype"];
-                    if ($scope.selectedComponentsType.indexOf( parseInt(type))>-1) {
-                        $scope.filteredSolutionComponents.push(solutionComponent);
+                    if ($scope.selectedComponentsType.indexOf(parseInt(type)) > -1) {
+                        filteredSolutionComponents.push(solutionComponent);
                     }
                 }
+                return filteredSolutionComponents;
             }
 
             $scope.openResource = function (solutionComponent) {
@@ -1423,8 +1444,15 @@ app.directive('solutionComponentListView', () => {
                 return null;
             }
 
-            
-            
+
+            $scope.backPage = function () {
+                $scope.currentPage--;
+            }
+
+            $scope.nextPage = function () {
+                $scope.currentPage++;
+            }
+
             $scope.initialize();
 
         },
@@ -1438,6 +1466,13 @@ app.directive('solutionComponentListView', () => {
                 /* '<input type="text" class="form-control" ng-model="filter"  placeholder="Search solution components" ng-model-options="{ debounce: 500 }"/>', */
                 '</div>',
                 '<div ng-if="loading" style="text-align:center;"><div>Filtering solution components...</div><div class="spinner-border" role="status"></div></div>',
+                
+                '<div class="row">',
+                '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=1" ng-click="backPage()" style="cursor: pointer"><i class="fa fa-arrow-left"></i></div>',
+                '   <div class="col-md-10" >Page {{currentPage}}/{{pagesNumber}}</div>',
+                '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=pagesNumber" ng-click="nextPage()" style="cursor: pointer"><i class="fa fa-arrow-right"></i></div>',
+                '</div>',
+
                 '<ul class="list-group" ng-if="!loading">',
                 '   <li class="list-group-item list-group-item-action" ng-class="isSelected(solutionComponent) ? \'active\' : undefined" ng-repeat="solutionComponent in filteredSolutionComponents" style="cursor:pointer;">',
                 '       <div class="row">',
@@ -1448,8 +1483,14 @@ app.directive('solutionComponentListView', () => {
                 //'           <div style="margin-left: 10px" ng-click="openResource(solutionComponent)"><i class="fa fa-external-link-alt" aria-hidden="true"></i></div>',
                 '       </div>',
                 '   </li>',
+                
                 '</ul>',
-
+                
+                '<div class="row">',
+                '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=1" ng-click="backPage()" style="cursor: pointer"><i class="fa fa-arrow-left"></i></div>',
+                '   <div class="col-md-10" >Page {{currentPage}}/{{pagesNumber}}</div>',
+                '   <div class="col-md-1"  ng-show="pagesNumber>1 && currentPage!=pagesNumber" ng-click="nextPage()" style="cursor: pointer"><i class="fa fa-arrow-right"></i></div>',
+                '</div>',
                 '</div>'].join(""),
         replace: true
     };
